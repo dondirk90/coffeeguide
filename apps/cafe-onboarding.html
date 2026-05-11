@@ -417,6 +417,17 @@
       </div>
 
       <div class="error-message" id="errorMessage"></div>
+      <div
+        class="warning-box"
+        id="claimBox"
+        style="display: none; margin-bottom: 20px"
+      >
+        <strong id="claimTitle">Cafe beanspruchen</strong>
+        <div
+          id="claimText"
+          style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px"
+        ></div>
+      </div>
 
       <!-- Step 1: Basic Info -->
       <div class="step-section active" id="step1">
@@ -779,6 +790,152 @@
             : `${location.origin}/api`;
       let currentStep = 1;
       let currentMode = "register";
+      let claimContext = null;
+
+      function apiFetch(path, init) {
+        return fetch(`${apiBase}${path}`, { cache: "no-store", ...init }).then(
+          async (res) => {
+            const text = await res.text();
+            let data = null;
+            try {
+              data = text ? JSON.parse(text) : null;
+            } catch (e) {
+              data = null;
+            }
+            if (!res.ok) {
+              const err = new Error("api_error");
+              err.status = res.status;
+              err.responseText = text || "";
+              if (data && (data.error || data.code)) {
+                err.code = String(data.error || data.code);
+              }
+              throw err;
+            }
+            return data;
+          },
+        );
+      }
+
+      function decodeGuideMeta(raw) {
+        try {
+          return (
+            JSON.parse(decodeURIComponent(escape(atob(String(raw || ""))))) || {}
+          );
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function extractGuideMeta(rawAbout) {
+        const raw = String(rawAbout || "");
+        const match = raw.match(/\[\[STAMP_GUIDE_JSON_B64:([^\]]+)\]\]\s*$/);
+        if (!match) return { about: raw.trim(), meta: {} };
+        return {
+          about: raw.replace(match[0], "").trim(),
+          meta: decodeGuideMeta(match[1]),
+        };
+      }
+
+      function composeAbout(meta) {
+        const visible = [
+          String(meta.summary || "").trim(),
+          String(meta.story || "").trim(),
+        ]
+          .filter(Boolean)
+          .join("\n\n");
+        const encoded = btoa(
+          unescape(encodeURIComponent(JSON.stringify(meta || {}))),
+        );
+        return `${visible}\n\n[[STAMP_GUIDE_JSON_B64:${encoded}]]`.trim();
+      }
+
+      function getClaimCafeIdFromUrl() {
+        try {
+          const params = new URLSearchParams(location.search);
+          const raw = params.get("claimCafeId");
+          const id = Number(raw);
+          return Number.isFinite(id) && id > 0 ? id : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function prefillClaimedCafe(sourceCafe) {
+        const claimBox = document.getElementById("claimBox");
+        const claimTitle = document.getElementById("claimTitle");
+        const claimText = document.getElementById("claimText");
+        if (!claimBox || !claimTitle || !claimText || !sourceCafe) return;
+
+        const parsed = extractGuideMeta(sourceCafe.about);
+        claimContext = { id: sourceCafe.id, cafe: sourceCafe, parsed };
+
+        document.getElementById("cafeName").value = sourceCafe.name || "";
+        if (sourceCafe.locationAddress) {
+          document.getElementById("street").value = String(
+            sourceCafe.locationAddress,
+          );
+        }
+        if (sourceCafe.city) {
+          document.getElementById("city").value = String(sourceCafe.city);
+        }
+        if (sourceCafe.country) {
+          document.getElementById("country").value = String(sourceCafe.country);
+        }
+
+        claimTitle.textContent = `Cafe beanspruchen: ${
+          sourceCafe.name || "Guide-Eintrag"
+        }`;
+        claimText.textContent =
+          "Du uebernimmst einen bestehenden Guide-Eintrag. Nach der Registrierung markieren wir dein neues Profil als Claim und uebertragen die bisherigen Guide-Infos in dein Cafeprofil.";
+        claimBox.style.display = "block";
+      }
+
+      async function applyClaimProfile(token, registeredCafe) {
+        if (!claimContext || !token) return;
+
+        const sourceCafe = claimContext.cafe || {};
+        const sourceMeta = (claimContext.parsed && claimContext.parsed.meta) || {};
+        const aboutMeta = {
+          ...sourceMeta,
+          ownershipStatus: "claimed",
+          listingSource:
+            sourceMeta.listingSource ||
+            `Claimed from guide entry #${String(claimContext.id)}`,
+          claimNote:
+            sourceMeta.claimNote ||
+            "Claim wurde ueber das Coffee-Guide-Onboarding gestartet.",
+        };
+
+        await apiFetch("/cafes/me/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            about: composeAbout(aboutMeta),
+            logoDataUrl: sourceCafe.logoDataUrl || null,
+            locationAddress:
+              sourceCafe.locationAddress ||
+              registeredCafe?.locationAddress ||
+              null,
+            lat:
+              sourceCafe.lat != null
+                ? sourceCafe.lat
+                : registeredCafe?.lat != null
+                  ? registeredCafe.lat
+                  : null,
+            lng:
+              sourceCafe.lng != null
+                ? sourceCafe.lng
+                : registeredCafe?.lng != null
+                  ? registeredCafe.lng
+                  : null,
+            redeemMessage: null,
+            cardTheme: "latte",
+          }),
+        });
+      }
 
       function setMode(mode) {
         currentMode = mode === "login" ? "login" : "register";
@@ -1144,7 +1301,6 @@
         currentStep = 2;
         updateStepIndicators(2);
       }
-      }
 
       async function submitRegistration() {
         const cafeName = document.getElementById("cafeName").value.trim();
@@ -1214,6 +1370,11 @@
               name: data.cafe?.name || null,
             };
             localStorage.setItem("cafe_session", JSON.stringify(cafeSession));
+            await applyClaimProfile(data.token, data.cafe || null);
+            if (claimContext) {
+              window.location.href = "/cafe-profile";
+              return;
+            }
           } catch (e) {}
 
           // Show success screen
@@ -1241,6 +1402,22 @@
         }
       }
 
+      async function initClaimMode() {
+        const claimCafeId = getClaimCafeIdFromUrl();
+        if (!claimCafeId) return;
+        try {
+          const data = await apiFetch(
+            `/cafes/public/${encodeURIComponent(String(claimCafeId))}`,
+          );
+          if (data && data.cafe) {
+            prefillClaimedCafe(data.cafe);
+            setMode("register");
+          }
+        } catch (e) {
+          console.warn("claim init failed", e);
+        }
+      }
+
       // Default state
       (function initMode() {
         try {
@@ -1260,6 +1437,7 @@
 
             // Important: do not override reset-mode with default register mode
             // when there is no saved session.
+            initClaimMode().catch(() => {});
             return;
           }
 
@@ -1296,8 +1474,10 @@
           } else {
             setMode("register");
           }
+          initClaimMode().catch(() => {});
         } catch (e) {
           setMode("register");
+          initClaimMode().catch(() => {});
         }
       })();
     </script>
