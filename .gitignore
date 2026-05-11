@@ -1,0 +1,14 @@
+﻿node_modules/
+.pnpm-store/
+.env
+.env.local
+.env.*.local
+
+apps/.apps-server.err.log
+apps/.apps-server.out.log
+api/.api.err.log
+api/.api.out.log
+
+data/*.db
+data/*.db-shm
+data/*.db-wal

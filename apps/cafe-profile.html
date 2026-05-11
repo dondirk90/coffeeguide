@@ -1,0 +1,81 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coffee Guide - Cafeprofil</title>
+    <style>
+      :root { --bg:#f5ede3; --surface:#fffaf4; --surface-2:#f0e2cf; --text:#34251a; --muted:#7a6552; --line:#d8c2aa; --accent:#6f4e37; --shadow:0 18px 46px rgba(68,41,18,.12); --radius:24px; }
+      *{box-sizing:border-box} body{margin:0;font-family:Georgia,'Times New Roman',serif;background:linear-gradient(180deg,#fbf6ef 0%,var(--bg) 100%);color:var(--text)} .shell{max-width:980px;margin:0 auto;padding:28px 22px 44px}.topbar{display:flex;justify-content:space-between;gap:14px;align-items:start;flex-wrap:wrap;margin-bottom:22px}.eyebrow{color:#9a7757;text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:700}h1{margin:6px 0 0;font-size:38px}.sub{color:var(--muted);font-size:15px;line-height:1.55;max-width:700px}.card{background:rgba(255,250,244,.94);border:1px solid rgba(111,78,55,.12);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}.stack{display:flex;flex-direction:column;gap:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field label{display:block;margin-bottom:8px;color:var(--accent);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.input,textarea,select{width:100%;min-height:46px;border-radius:18px;border:1px solid var(--line);background:#fffdf9;color:var(--text);font:inherit;padding:12px 14px}textarea{min-height:120px;resize:vertical}.btnRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fffdf9;color:var(--text);font-weight:700;cursor:pointer;text-decoration:none}.btn.primary{background:var(--accent);color:#fffaf5;border-color:var(--accent)}.msg{color:var(--muted);font-size:13px}.preview{padding:16px;border-radius:18px;background:var(--surface-2);color:var(--text);line-height:1.65;white-space:pre-wrap}.logoPreview,.coverPreview{display:none;border-radius:18px;object-fit:cover;border:1px solid rgba(111,78,55,.14)}.logoPreview{width:70px;height:70px}.coverPreview{width:180px;height:120px}.statusNote{padding:14px 16px;border-radius:18px;background:var(--surface-2);color:var(--text);line-height:1.6}.previewTitle{display:block;margin-bottom:8px;color:var(--accent);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}@media(max-width:820px){.grid{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Coffee Guide</div>
+          <h1>Cafeprofil kuratieren</h1>
+          <div class="sub">Lege fest, wie dein Cafe fuer Aficionados lesbar wird: Bohnenprofil, Roester, Handschrift, Signature Drinks und kleine Hinweise, die man in generischen Profilen nie findet.</div>
+        </div>
+        <div class="btnRow"><a class="btn" href="/coffee-guide">Guide ansehen</a><a class="btn" href="/cafe-onboarding">Onboarding</a></div>
+      </div>
+      <div class="card stack">
+        <div class="grid">
+          <div class="field"><label for="locationAddress">Standort</label><input id="locationAddress" class="input" type="text" placeholder="Strasse, Stadt" /></div>
+          <div class="field"><label for="summary">Kurzprofil</label><input id="summary" class="input" type="text" placeholder="Wofuer erinnert man sich an euch?" /></div>
+          <div class="field"><label for="lat">Latitude</label><input id="lat" class="input" type="number" step="any" placeholder="52.5200" /></div>
+          <div class="field"><label for="lng">Longitude</label><input id="lng" class="input" type="number" step="any" placeholder="13.4050" /></div>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label for="ownershipStatus">Profilstatus</label>
+            <select id="ownershipStatus" class="input">
+              <option value="seeded">Guide seeded</option>
+              <option value="claimed">Claim pending</option>
+              <option value="owner_verified">Verified by cafe</option>
+            </select>
+          </div>
+          <div class="field"><label for="listingSource">Quelle</label><input id="listingSource" class="input" type="text" placeholder="z.B. selbst angelegt, Website, Community-Hinweis" /></div>
+        </div>
+        <div class="field"><label for="claimNote">Statusnotiz</label><textarea id="claimNote" placeholder="Optional: was sollte man ueber den Claim- oder Verifizierungsstatus wissen?"></textarea></div>
+        <div id="statusNote" class="statusNote">Seeded Profile sollten nur mit schlanken Basisdaten starten. Reichere Bohnen-, Angebots- und Story-Inhalte sollten idealerweise vom Cafe selbst kommen.</div>
+        <div class="grid">
+          <div class="field"><label for="beanScore">Cafebohnen 1-5</label><select id="beanScore" class="input"><option value="">Keine Einordnung</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+          <div class="field"><label for="roasterName">Roester</label><input id="roasterName" class="input" type="text" placeholder="z.B. The Barn, Five Elephant ..." /></div>
+        </div>
+        <div class="grid">
+          <div class="field"><label for="houseBeans">Hausbohnen / Origins</label><textarea id="houseBeans" placeholder="z.B. Espresso Blend, Single Origin Filter, Decaf ..."></textarea></div>
+          <div class="field"><label for="brewMethods">Bruehmethoden</label><textarea id="brewMethods" placeholder="Espresso, V60, Kalita, Batch Brew, Aeropress ..."></textarea></div>
+        </div>
+        <div class="field"><label for="specialties">Spezialitaeten</label><textarea id="specialties" placeholder="Signature Drinks, saisonale Filter, Pairings, Suesses ..."></textarea></div>
+        <div class="field"><label for="roasterNotes">Roester-Notiz</label><textarea id="roasterNotes" placeholder="Warum arbeitet ihr mit diesem Roester? Was sucht ihr im Cup?"></textarea></div>
+        <div class="field"><label for="beanNotes">Bohnen-Notizen</label><textarea id="beanNotes" placeholder="Saeurebild, Textur, Suesse, Roast Style ..."></textarea></div>
+        <div class="field"><label for="story">Laengeres Profil</label><textarea id="story" placeholder="Erzaehlt, worum es bei eurem Cafe geht: Raum, Haltung, Kaffeeverstaendnis, Publikum ..."></textarea></div>
+        <div class="grid">
+          <div class="field"><label for="logo">Logo</label><input id="logo" type="file" accept="image/*" /><img id="logoPreview" class="logoPreview" alt="Logo Vorschau" /></div>
+          <div class="field"><label for="cover">Coverbild</label><input id="cover" type="file" accept="image/png,image/jpeg,image/webp" /><img id="coverPreview" class="coverPreview" alt="Cover Vorschau" /></div>
+        </div>
+        <div><label class="previewTitle">Vorschau</label><div id="preview" class="preview">Noch keine Inhalte.</div></div>
+        <div class="btnRow"><button class="btn primary" id="saveBtn" type="button">Speichern</button><div class="msg" id="msg"></div></div>
+      </div>
+    </div>
+    <script src="/ui.js"></script>
+    <script>
+      let cafe=null; let apiBase=location.port==='3000'?location.origin:`${location.origin}/api`; const state={logoDataUrl:null,coverDataUrl:null};
+      function setMsg(v){document.getElementById('msg').textContent=v||''}
+      function apiFetch(path,init){return fetch(`${apiBase}${path}`,{cache:'no-store',...init}).then(async(res)=>{const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=null}if(!res.ok){const err=new Error('api_error');err.status=res.status;err.responseText=text||'';throw err}return data})}
+      function readFileAsDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=()=>reject(new Error('file_read_failed'));r.onload=()=>resolve(String(r.result||''));r.readAsDataURL(file)})}
+      function collectGuide(){return{summary:document.getElementById('summary').value.trim(),story:document.getElementById('story').value.trim(),beanScore:document.getElementById('beanScore').value.trim(),roasterName:document.getElementById('roasterName').value.trim(),roasterNotes:document.getElementById('roasterNotes').value.trim(),houseBeans:document.getElementById('houseBeans').value.trim(),brewMethods:document.getElementById('brewMethods').value.trim(),specialties:document.getElementById('specialties').value.trim(),beanNotes:document.getElementById('beanNotes').value.trim(),ownershipStatus:document.getElementById('ownershipStatus').value.trim()||'seeded',listingSource:document.getElementById('listingSource').value.trim(),claimNote:document.getElementById('claimNote').value.trim()}}
+      function encodeGuideMeta(meta){return btoa(unescape(encodeURIComponent(JSON.stringify(meta||{}))))}
+      function decodeGuideMeta(raw){try{return JSON.parse(decodeURIComponent(escape(atob(String(raw||'')))))||{}}catch{return {}}}
+      function extractGuideMeta(rawAbout){const raw=String(rawAbout||'');const m=raw.match(/\[\[STAMP_GUIDE_JSON_B64:([^\]]+)\]\]\s*$/);if(!m)return{about:raw.trim(),meta:{}};return{about:raw.replace(m[0],'').trim(),meta:decodeGuideMeta(m[1])}}
+      function composeAbout(meta){const visible=[String(meta.summary||'').trim(),String(meta.story||'').trim()].filter(Boolean).join('\n\n');return `${visible}\n\n[[STAMP_GUIDE_JSON_B64:${encodeGuideMeta(meta)}]]`.trim()}
+      function updateStatusNote(){const status=document.getElementById('ownershipStatus').value;const note=document.getElementById('statusNote');if(status==='owner_verified'){note.textContent='Verified by cafe: Dieses Profil kann umfangreiche Bohnen-, Roester- und Angebotsinformationen direkt aus dem Cafe tragen.';return}if(status==='claimed'){note.textContent='Claim pending: Das Cafe ist im Prozess, das Profil zu uebernehmen. Oeffentliche Basisdaten koennen sichtbar bleiben, reichere Inhalte duerfen schrittweise wachsen.';return}note.textContent='Guide seeded: Starte nur mit schlanken Basisdaten. Reichere Bohnen-, Angebots- und Story-Inhalte sollten idealerweise vom Cafe selbst kommen.'}
+      function renderPreview(){const meta=collectGuide();const bits=[];bits.push(`Status: ${meta.ownershipStatus||'seeded'}`);if(meta.listingSource)bits.push(`Quelle: ${meta.listingSource}`);if(meta.claimNote)bits.push(`Statusnotiz\n${meta.claimNote}`);if(meta.summary)bits.push(meta.summary);if(meta.beanScore)bits.push(`Cafebohnen ${meta.beanScore}/5`);if(meta.roasterName)bits.push(`Roester: ${meta.roasterName}`);if(meta.houseBeans)bits.push(`Bohnen\n${meta.houseBeans}`);if(meta.brewMethods)bits.push(`Bruehmethoden\n${meta.brewMethods}`);if(meta.specialties)bits.push(`Spezialitaeten\n${meta.specialties}`);if(meta.roasterNotes)bits.push(`Zum Roester\n${meta.roasterNotes}`);if(meta.beanNotes)bits.push(`Notizen\n${meta.beanNotes}`);if(meta.story)bits.push(`Profil\n${meta.story}`);document.getElementById('preview').textContent=bits.join('\n\n')||'Noch keine Inhalte.';updateStatusNote()}
+      function hydrate(cafeInfo){document.getElementById('locationAddress').value=cafeInfo&&cafeInfo.locationAddress?String(cafeInfo.locationAddress):'';document.getElementById('lat').value=cafeInfo&&cafeInfo.lat!=null?String(cafeInfo.lat):'';document.getElementById('lng').value=cafeInfo&&cafeInfo.lng!=null?String(cafeInfo.lng):'';const parsed=extractGuideMeta(cafeInfo&&cafeInfo.about?cafeInfo.about:'');const meta=parsed.meta||{};document.getElementById('summary').value=meta.summary||'';document.getElementById('story').value=meta.story||parsed.about||'';document.getElementById('beanScore').value=meta.beanScore||'';document.getElementById('roasterName').value=meta.roasterName||'';document.getElementById('roasterNotes').value=meta.roasterNotes||'';document.getElementById('houseBeans').value=meta.houseBeans||'';document.getElementById('brewMethods').value=meta.brewMethods||'';document.getElementById('specialties').value=meta.specialties||'';document.getElementById('beanNotes').value=meta.beanNotes||'';document.getElementById('ownershipStatus').value=meta.ownershipStatus||'owner_verified';document.getElementById('listingSource').value=meta.listingSource||'';document.getElementById('claimNote').value=meta.claimNote||'';state.logoDataUrl=cafeInfo&&cafeInfo.logoDataUrl?String(cafeInfo.logoDataUrl):null;if(state.logoDataUrl){const p=document.getElementById('logoPreview');p.src=state.logoDataUrl;p.style.display='block'}renderPreview()}
+      async function saveProfile(){const btn=document.getElementById('saveBtn');btn.disabled=true;setMsg('Speichere...');try{const logoFile=document.getElementById('logo').files[0];let logoDataUrl=state.logoDataUrl;if(logoFile)logoDataUrl=await readFileAsDataUrl(logoFile);const coverFile=document.getElementById('cover').files[0];if(coverFile)state.coverDataUrl=await readFileAsDataUrl(coverFile);const meta=collectGuide();await apiFetch('/cafes/me/profile',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${cafe.token}`},body:JSON.stringify({about:composeAbout(meta),redeemMessage:null,logoDataUrl:logoDataUrl||null,locationAddress:document.getElementById('locationAddress').value.trim()||null,lat:document.getElementById('lat').value.trim()||null,lng:document.getElementById('lng').value.trim()||null,cardTheme:'latte'})});if(coverFile){try{const existing=await apiFetch('/cafes/me/images',{headers:{Authorization:`Bearer ${cafe.token}`}});for(const img of(existing&&existing.images)||[]){if(!img||!img.id)continue;try{await apiFetch(`/cafes/me/images/${encodeURIComponent(String(img.id))}`,{method:'DELETE',headers:{Authorization:`Bearer ${cafe.token}`}})}catch{}}await apiFetch('/cafes/me/images',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${cafe.token}`},body:JSON.stringify({dataUrl:state.coverDataUrl})})}catch{}}setMsg('Guide-Profil gespeichert')}catch(e){setMsg(window.stampUI?stampUI.userSafeErrorMessage(e,'Speichern fehlgeschlagen.'):'Speichern fehlgeschlagen.')}finally{btn.disabled=false}}
+      async function init(){const saved=localStorage.getItem('cafe_session');if(!saved){location.href='/cafe-onboarding';return}cafe=JSON.parse(saved);try{const overview=await apiFetch('/cafes/me/overview?eventsLimit=5&customers=5',{headers:{Authorization:`Bearer ${cafe.token}`}});hydrate(overview&&overview.cafe?overview.cafe:null)}catch(e){setMsg('Profil konnte nicht geladen werden.')}for(const id of['summary','story','beanScore','roasterName','roasterNotes','houseBeans','brewMethods','specialties','beanNotes','ownershipStatus','listingSource','claimNote']){document.getElementById(id).addEventListener('input',renderPreview);document.getElementById(id).addEventListener('change',renderPreview)}document.getElementById('saveBtn').addEventListener('click',saveProfile);document.getElementById('logo').addEventListener('change',async function(){const file=this.files&&this.files[0];if(!file)return;state.logoDataUrl=await readFileAsDataUrl(file);const p=document.getElementById('logoPreview');p.src=state.logoDataUrl;p.style.display='block'});document.getElementById('cover').addEventListener('change',async function(){const file=this.files&&this.files[0];if(!file)return;state.coverDataUrl=await readFileAsDataUrl(file);const p=document.getElementById('coverPreview');p.src=state.coverDataUrl;p.style.display='block'});updateStatusNote()}
+      init();
+    </script>
+  </body>
+</html>

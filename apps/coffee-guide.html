@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Coffee Guide</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root { --bg:#f6efe6; --surface:#fffaf4; --surface-strong:#f0e2cf; --text:#34251a; --muted:#7a6552; --line:#d8c2aa; --accent:#6f4e37; --accent-2:#9a7757; --shadow:0 18px 46px rgba(68,41,18,.12); --radius:24px; }
+      *{box-sizing:border-box} body{margin:0;font-family:Georgia,'Times New Roman',serif;background:radial-gradient(circle at top left,rgba(201,162,123,.22),transparent 30%),linear-gradient(180deg,#fbf6ef 0%,var(--bg) 100%);color:var(--text)} a{color:inherit}
+      .shell{max-width:1200px;margin:0 auto;padding:28px 22px 40px}.topbar{display:flex;justify-content:space-between;gap:18px;align-items:start;flex-wrap:wrap;margin-bottom:24px}.eyebrow{color:var(--accent-2);font-size:12px;text-transform:uppercase;letter-spacing:.18em;font-weight:700}h1{margin:6px 0 10px;font-size:clamp(34px,6vw,62px);line-height:.96;font-weight:700;letter-spacing:-.04em}.lede{max-width:760px;color:var(--muted);font-size:16px;line-height:1.55}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);text-decoration:none;background:rgba(255,255,255,.65);color:var(--text);font-weight:700}.btn.primary{background:var(--accent);color:#fffaf5;border-color:var(--accent)}
+      .grid{display:grid;grid-template-columns:1.4fr .92fr;gap:20px}.panel{background:rgba(255,250,244,.92);border:1px solid rgba(111,78,55,.12);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.mapPanel,.listPanel{padding:18px}.mapHead{display:flex;justify-content:space-between;gap:14px;align-items:end;margin-bottom:14px;flex-wrap:wrap}.mapTitle{font-size:22px;font-weight:700}.hint{color:var(--muted);font-size:14px}.search{width:min(320px,100%);min-height:44px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.8);padding:0 16px;color:var(--text);font:inherit}#guideMap{height:560px;border-radius:18px;overflow:hidden;border:1px solid rgba(111,78,55,.12)}.listHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.listTitle{font-size:20px;font-weight:700}.listMeta{color:var(--muted);font-size:13px}.list{display:flex;flex-direction:column}.item{display:flex;justify-content:space-between;gap:14px;align-items:start;text-decoration:none;padding:16px 0;border-top:1px solid rgba(111,78,55,.12)}.item:first-child{border-top:none}.itemName{font-size:18px;font-weight:700;margin-bottom:4px}.itemAddr{color:var(--muted);font-size:13px;line-height:1.4}.itemMeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:var(--surface-strong);color:var(--accent);font-size:12px;font-weight:700}.pill.status-seeded{background:#eadfd0;color:#876447}.pill.status-claimed{background:#efe4cd;color:#8c6a2a}.pill.status-verified{background:#dce9dc;color:#406346}.arrow{color:var(--accent-2);font-size:13px;white-space:nowrap;padding-top:2px}.empty{color:var(--muted);padding:18px 0 6px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fffaf4;color:var(--text)}.popupName{font-weight:700;margin-bottom:4px}.popupAddr{color:var(--muted);font-size:12px}.popupMeta{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.legendNote{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}@media(max-width:940px){.grid{grid-template-columns:1fr}#guideMap{height:420px}}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Coffee Guide</div>
+          <h1>Eine Karte fuer Menschen, die Cafes wirklich lesen wollen.</h1>
+          <div class="lede">Entdecke Specialty-Cafes ueber Bohnen, Roester, Bruehstil und Handschrift statt nur ueber Entfernung. Minimal angelegte Orte koennen zuerst als Guide-Eintrag starten und spaeter vom Cafe selbst uebernommen werden.</div>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="/coffee-guide">Zur Karte</a>
+          <a class="btn" href="/cafe-onboarding">Cafe anlegen</a>
+          <a class="btn" href="/cafe-profile">Cafeprofil pflegen</a>
+        </div>
+      </div>
+      <div class="grid">
+        <section class="panel mapPanel">
+          <div class="mapHead">
+            <div>
+              <div class="mapTitle">Zentrale Karte</div>
+              <div class="hint">Tippe auf ein Cafe oder nutze die Liste rechts fuer den direkten Einstieg.</div>
+              <div class="legend">
+                <span class="pill status-seeded">Guide seeded</span>
+                <span class="pill status-claimed">Claim pending</span>
+                <span class="pill status-verified">Verified by cafe</span>
+              </div>
+              <div class="legendNote">Seeded Cafes koennen mit schlanken Basisdaten starten. Reichere Bohnen- und Profilinformationen sollten vom Cafe selbst kommen.</div>
+            </div>
+            <input id="search" class="search" type="search" placeholder="Cafe, Ort, Roester oder Stil suchen..." autocomplete="off" />
+          </div>
+          <div id="guideMap" aria-label="Coffee Guide Karte"></div>
+        </section>
+        <aside class="panel listPanel">
+          <div class="listHead"><div><div class="listTitle">Curated Places</div><div class="listMeta" id="countLabel">Lade Cafes...</div></div></div>
+          <div id="guideList" class="list"></div>
+        </aside>
+      </div>
+    </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+      function apiFetch(path){return fetch(`${location.origin}/api${path}`,{cache:'no-store'}).then(async(res)=>{const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=null}if(!res.ok){const err=new Error('api_error');err.status=res.status;err.responseText=text||'';throw err}return data})}
+      function normalize(s){return String(s||'').trim().toLowerCase()}
+      function extractGuideMeta(rawAbout){const raw=String(rawAbout||'');const m=raw.match(/\[\[STAMP_GUIDE_JSON_B64:([^\]]+)\]\]\s*$/);if(!m)return{about:raw.trim(),meta:{}};let meta={};try{meta=JSON.parse(decodeURIComponent(escape(atob(m[1]))))||{}}catch(e){meta={}}return{about:raw.replace(m[0],'').trim(),meta}}
+      function scoreLabel(n){const v=Number(n||0);if(!isFinite(v)||v<=0)return'';return `Beans ${v}/5`}
+      function ownershipInfo(meta){const status=String(meta.ownershipStatus||'seeded').trim()||'seeded';if(status==='owner_verified')return{label:'Verified by cafe',className:'status-verified'};if(status==='claimed')return{label:'Claim pending',className:'status-claimed'};return{label:'Guide seeded',className:'status-seeded'}}
+      function renderStatusPill(meta){const info=ownershipInfo(meta);return `<span class="pill ${info.className}">${info.label}</span>`}
+      function renderList(cafes){const list=document.getElementById('guideList');const label=document.getElementById('countLabel');list.innerHTML='';label.textContent=`${cafes.length} Cafes gefunden`;if(!cafes.length){list.innerHTML='<div class="empty">Noch keine passenden Cafes.</div>';return}for(const cafe of cafes){const a=document.createElement('a');a.className='item';a.href=`/coffee-guide-cafe?id=${encodeURIComponent(String(cafe.id))}`;const meta=extractGuideMeta(cafe.about).meta||{};const beanScore=scoreLabel(meta.beanScore);const roaster=meta.roasterName?String(meta.roasterName):'';a.innerHTML=`<div><div class="itemName">${cafe.name||'Cafe'}</div><div class="itemAddr">${cafe.address||''}</div><div class="itemMeta">${renderStatusPill(meta)}${beanScore?`<span class="pill">${beanScore}</span>`:''}${roaster?`<span class="pill">${roaster}</span>`:''}</div></div><div class="arrow">Profil oeffnen</div>`;list.appendChild(a)}}
+      (async function(){const data=await apiFetch('/cafes/public');const cafesRaw=data&&Array.isArray(data.cafes)?data.cafes:[];let cafes=cafesRaw.slice();renderList(cafes);const first=cafes.find((c)=>Number.isFinite(Number(c.lat))&&Number.isFinite(Number(c.lng)));const map=L.map('guideMap',{zoomControl:true,attributionControl:false}).setView(first?[Number(first.lat),Number(first.lng)]:[52.52,13.405],first?13:6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);let markers=[];function draw(list){for(const m of markers){try{m.remove()}catch{}}markers=[];for(const cafe of list){if(!Number.isFinite(Number(cafe.lat))||!Number.isFinite(Number(cafe.lng)))continue;const meta=extractGuideMeta(cafe.about).meta||{};const info=ownershipInfo(meta);const marker=L.marker([Number(cafe.lat),Number(cafe.lng)]).addTo(map);marker.bindPopup(`<div class="popupName">${cafe.name||'Cafe'}</div><div class="popupAddr">${cafe.address||''}</div><div class="popupMeta"><span class="pill ${info.className}">${info.label}</span></div><div style="margin-top:8px"><a href="/coffee-guide-cafe?id=${encodeURIComponent(String(cafe.id))}">Profil ansehen</a></div>`);markers.push(marker)}}draw(cafes);const search=document.getElementById('search');search.addEventListener('input',function(){const q=normalize(search.value);cafes=cafesRaw.filter((c)=>{if(!q)return true;const meta=extractGuideMeta(c.about).meta||{};const bag=[c.name,c.address,meta.roasterName,meta.houseBeans,meta.specialties,meta.story,meta.summary].join(' ').toLowerCase();return bag.indexOf(q)!==-1});renderList(cafes);draw(cafes)})})().catch(function(e){document.getElementById('guideList').innerHTML='<div class="empty">Guide konnte nicht geladen werden.</div>';console.error(e)})
+    </script>
+  </body>
+</html>
+

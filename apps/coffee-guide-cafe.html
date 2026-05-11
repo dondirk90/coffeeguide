@@ -1,0 +1,54 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Coffee Guide - Cafe</title>
+    <style>
+      :root { --bg:#f6efe6; --surface:#fffaf4; --surface-2:#f0e2cf; --text:#34251a; --muted:#7a6552; --line:#d8c2aa; --accent:#6f4e37; --shadow:0 18px 46px rgba(68,41,18,.12); --radius:26px; }
+      *{box-sizing:border-box} body{margin:0;font-family:Georgia,'Times New Roman',serif;color:var(--text);background:linear-gradient(180deg,#fbf6ef 0%,var(--bg) 100%)}
+      .shell{max-width:1080px;margin:0 auto;padding:28px 22px 48px}.topbar{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.btn{display:inline-flex;min-height:44px;align-items:center;padding:0 16px;border-radius:999px;border:1px solid var(--line);text-decoration:none;background:rgba(255,255,255,.7);color:var(--text);font-weight:700}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}.card{background:rgba(255,250,244,.94);border:1px solid rgba(111,78,55,.12);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.media{min-height:420px;background:var(--surface-2)}.media img{width:100%;height:100%;object-fit:cover;display:block}.content{padding:28px;display:flex;flex-direction:column;gap:18px}.eyebrow{color:#9a7757;text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:700}h1{margin:4px 0 0;font-size:clamp(34px,5vw,56px);line-height:.95;letter-spacing:-.04em}.addr{color:var(--muted);font-size:15px}.lede{color:var(--muted);font-size:16px;line-height:1.6}.metaRow{display:flex;gap:10px;flex-wrap:wrap}.pill{display:inline-flex;min-height:32px;align-items:center;padding:0 12px;border-radius:999px;background:var(--surface-2);color:var(--accent);font-size:12px;font-weight:700}.pill.status-seeded{background:#eadfd0;color:#876447}.pill.status-claimed{background:#efe4cd;color:#8c6a2a}.pill.status-verified{background:#dce9dc;color:#406346}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px}.section{padding:20px 22px}.sectionTitle{margin:0 0 10px;font-size:18px;font-weight:700}.bodyText{color:var(--text);line-height:1.65;font-size:15px;white-space:pre-wrap}.muted{color:var(--muted)}.empty{color:var(--muted);font-style:italic}.gallery{display:flex;gap:10px;overflow:auto;padding-top:12px}.gallery img{width:132px;height:92px;object-fit:cover;border-radius:14px;border:1px solid rgba(111,78,55,.14)}.claimBox{padding:18px 20px;border-top:1px solid rgba(111,78,55,.12);background:rgba(255,250,244,.82)}.claimTitle{font-weight:700;margin-bottom:6px}.claimText{color:var(--muted);font-size:14px;line-height:1.6}.claimActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}@media(max-width:920px){.hero,.grid{grid-template-columns:1fr}.media{min-height:280px}}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <a class="btn" href="/coffee-guide">Zurueck zur Karte</a>
+        <a class="btn" href="/cafe-profile">Cafeprofil bearbeiten</a>
+      </div>
+      <div class="hero">
+        <div class="card media" id="heroWrap" style="display:none"><img id="heroImg" alt="Cafe Bild" /></div>
+        <div class="card">
+          <div class="content">
+            <div class="eyebrow">Coffee Guide Profile</div>
+            <h1 id="title">Cafe</h1>
+            <div class="addr" id="addr">-</div>
+            <div class="metaRow" id="metaRow"></div>
+            <div class="lede" id="summary">Noch keine Guide-Notizen.</div>
+          </div>
+          <div class="claimBox">
+            <div class="claimTitle" id="claimTitle">Guide seeded</div>
+            <div class="claimText" id="claimText">Dieses Profil basiert auf einem schlanken Guide-Eintrag.</div>
+            <div class="claimActions" id="claimActions"></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card section"><h2 class="sectionTitle">Hausprofil</h2><div id="story" class="bodyText empty">Noch kein Profiltext.</div></div>
+        <div class="card section"><h2 class="sectionTitle">Roester</h2><div id="roaster" class="bodyText empty">Noch kein Roester hinterlegt.</div></div>
+        <div class="card section"><h2 class="sectionTitle">Bohnen und Stil</h2><div id="beans" class="bodyText empty">Noch keine Bohneninfos.</div></div>
+        <div class="card section"><h2 class="sectionTitle">Spezialitaeten</h2><div id="specialties" class="bodyText empty">Noch keine Spezialitaeten beschrieben.</div></div>
+      </div>
+      <div class="card section" style="margin-top:20px"><h2 class="sectionTitle">Galerie</h2><div id="gallery" class="gallery"></div></div>
+    </div>
+    <script>
+      function apiFetch(path){return fetch(`${location.origin}/api${path}`,{cache:'no-store'}).then(async(res)=>{const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=null}if(!res.ok){const err=new Error('api_error');err.status=res.status;err.responseText=text||'';throw err}return data})}
+      function extractGuideMeta(rawAbout){const raw=String(rawAbout||'');const m=raw.match(/\[\[STAMP_GUIDE_JSON_B64:([^\]]+)\]\]\s*$/);let meta={};let about=raw.trim();if(m){about=raw.replace(m[0],'').trim();try{meta=JSON.parse(decodeURIComponent(escape(atob(m[1]))))||{}}catch(e){meta={}}}return{about,meta}}
+      function setText(id,value,emptyText){const el=document.getElementById(id);const txt=String(value||'').trim();if(!txt){el.textContent=emptyText;el.classList.add('empty');return}el.textContent=txt;el.classList.remove('empty')}
+      function scorePill(value){const n=Number(value||0);if(!isFinite(n)||n<=0)return'';return `<span class="pill">Cafebohnen ${n}/5</span>`}
+      function ownershipInfo(meta){const status=String(meta.ownershipStatus||'seeded').trim()||'seeded';if(status==='owner_verified')return{label:'Verified by cafe',className:'status-verified',title:'Vom Cafe gepflegt',text:'Dieses Profil wird vom Cafe selbst gepflegt. Detailangaben zu Bohnen, Roester und Stil kommen direkt vom Team.',actions:[`<a class="btn" href="/cafe-profile">Profil aktualisieren</a>`]};if(status==='claimed')return{label:'Claim pending',className:'status-claimed',title:'Claim laeuft',text:'Dieses Cafe wurde bereits beansprucht oder befindet sich im Pruefprozess. Bewertungen sind moeglich, Detaildaten koennen noch wachsen.',actions:[]};return{label:'Guide seeded',className:'status-seeded',title:'Guide seeded',text:'Dieses Profil basiert auf einem schlanken Guide-Eintrag mit Basisdaten. Fuer vollstaendige Bohnen- und Angebotsinfos sollte das Cafe das Profil uebernehmen.',actions:[`<a class="btn" href="/cafe-onboarding?claimCafeId=${encodeURIComponent(String(meta.sourceCafeId||''))}">Cafe beanspruchen</a>`,`<a class="btn" href="/cafe-onboarding">Eigenes Cafe anlegen</a>`]}}
+      function buildClaimBox(meta,cafe){const info=ownershipInfo({...meta,sourceCafeId:cafe&&cafe.id});document.getElementById('claimTitle').textContent=info.title;document.getElementById('claimText').textContent=info.text;document.getElementById('claimActions').innerHTML=(info.actions||[]).join('')}
+      (async function(){const params=new URLSearchParams(location.search);const id=params.get('id');if(!id)throw new Error('missing_id');const data=await apiFetch(`/cafes/public/${encodeURIComponent(id)}`);const cafe=data&&data.cafe?data.cafe:null;if(!cafe)throw new Error('cafe_not_found');const parsed=extractGuideMeta(cafe.about);const meta=parsed.meta||{};const owner=ownershipInfo({...meta,sourceCafeId:cafe.id});document.getElementById('title').textContent=cafe.name||'Cafe';document.getElementById('addr').textContent=cafe.address||'';document.getElementById('summary').textContent=meta.summary||parsed.about||'Noch keine Guide-Notizen.';document.getElementById('metaRow').innerHTML=`<span class="pill ${owner.className}">${owner.label}</span>${scorePill(meta.beanScore)}${meta.roasterName?`<span class="pill">${meta.roasterName}</span>`:''}${meta.brewMethods?`<span class="pill">${meta.brewMethods}</span>`:''}`;buildClaimBox(meta,cafe);setText('story',meta.story||parsed.about,'Noch kein Profiltext.');setText('roaster',[meta.roasterName,meta.roasterNotes].filter(Boolean).join('\n\n'),'Noch kein Roester hinterlegt.');setText('beans',[meta.houseBeans,meta.beanNotes].filter(Boolean).join('\n\n'),'Noch keine Bohneninfos.');setText('specialties',meta.specialties,'Noch keine Spezialitaeten beschrieben.');const images=Array.isArray(cafe.images)?cafe.images.filter(Boolean):[];const hero=images[0]||cafe.logoDataUrl||'';if(hero){document.getElementById('heroWrap').style.display='block';document.getElementById('heroImg').src=hero}const gallery=document.getElementById('gallery');for(const src of images){const img=document.createElement('img');img.src=src;img.alt='Cafe Bild';gallery.appendChild(img)}if(!gallery.children.length){gallery.innerHTML='<div class="muted">Noch keine Galerie.</div>'}})().catch(function(e){document.body.innerHTML='<div style="padding:32px;font-family:Georgia,serif">Cafeprofil konnte nicht geladen werden.</div>';console.error(e)})
+    </script>
+  </body>
+</html>
